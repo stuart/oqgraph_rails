@@ -1,5 +1,5 @@
-require 'edge_instance_methods'
-require 'edge_class_methods'
+require 'oqgraph/edge_instance_methods'
+require 'oqgraph/edge_class_methods'
 
 module OQGraph
   module Edge
@@ -10,7 +10,7 @@ module OQGraph
         end
         
         def self.node_class
-          node_class_name.constantize
+          node_class_name.constantize 
         end
         
         self.table_name = name.underscore.pluralize

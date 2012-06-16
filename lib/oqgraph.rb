@@ -1,2 +1,2 @@
-require 'edge'
-require 'node'
+require 'oqgraph/edge'
+require 'oqgraph/node'

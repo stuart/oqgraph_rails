@@ -11,4 +11,5 @@ class OQgraphMigrationGeneratorTest < Rails::Generators::TestCase
     files = Dir.glob('test/tmp/db/migrate/*')
     assert_match /[0-9]+_funkies/, files[0]
   end
+  
 end

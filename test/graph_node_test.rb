@@ -1,6 +1,5 @@
 require 'test_helper'
-require 'node'
-require 'edge'
+require 'oqgraph'
 
 class TestNode < ActiveRecord::Base
   include OQGraph::Node
@@ -88,7 +87,7 @@ class GraphNodeTest < ActiveSupport::TestCase
   end
   
   test "getting the shortest path" do
-    #   a -- b -- c -- d
+    #   a -> b -> c -> d
     @test_1.create_edge_to @test_2
     @test_2.create_edge_to @test_3
     @test_3.create_edge_to @test_4
@@ -98,9 +97,9 @@ class GraphNodeTest < ActiveSupport::TestCase
   
   test "complex getting the shortest path" do
     # 
-    # a -- b -- c -- d
+    # a -> b -> c -> d
     #      |      / 
-    #      e-- f 
+    #      e-> f 
     @test_1.create_edge_to @test_2
     @test_2.create_edge_to @test_3
     @test_3.create_edge_to @test_4
@@ -134,18 +133,20 @@ class GraphNodeTest < ActiveSupport::TestCase
   end
   
   # 1 -> 2 -> 3
+  # This is broken!!
   test "getting originating nodes" do
     @test_1.create_edge_to @test_2
     @test_2.create_edge_to @test_3
-    assert_equal [@test_2, @test_1] , @test_2.originating
+    assert_equal [@test_2, @test_1], @test_2.originating
   end
-    
+  
   test "getting the reachable nodes" do
     @test_1.create_edge_to @test_2
     @test_2.create_edge_to @test_3
     assert_equal [@test_2, @test_3] , @test_2.reachable
   end
   
+  # Broken too.
   test "testing if the node is originating" do
     @test_1.create_edge_to @test_2
     @test_2.create_edge_to @test_3
@@ -172,14 +173,14 @@ class GraphNodeTest < ActiveSupport::TestCase
     end
   end
    
-  def test_duplicate_link_error
+  test "duplicate link error" do
     ActiveRecord::Base.connection.execute("INSERT INTO test_node_edge_oqgraph (destid, origid, weight) VALUES (99,99,1.0);")   
     assert_raises ActiveRecord::StatementInvalid do
       ActiveRecord::Base.connection.execute("INSERT INTO test_node_edge_oqgraph (destid, origid, weight) VALUES (99,99,1.0);")
     end
   end
 
-  def test_duplicate_link_error_fix
+  test "duplicate link error fix" do
     ActiveRecord::Base.connection.execute("REPLACE INTO test_node_edge_oqgraph (destid, origid, weight) VALUES (99,99,1.0);")   
     assert_nothing_raised do
       ActiveRecord::Base.connection.execute("REPLACE INTO test_node_edge_oqgraph (destid, origid, weight) VALUES (99,99,1.0);")

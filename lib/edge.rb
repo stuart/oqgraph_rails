@@ -1,4 +1,5 @@
 require 'edge_instance_methods'
+require 'edge_class_methods'
 
 module OQGraph
   module Edge

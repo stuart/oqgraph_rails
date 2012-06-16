@@ -67,9 +67,6 @@ module OQGraph
     end
     
     # Finds the edges leading directly into the node
-    # FIXME: Note this currently does not work.
-    # I suspect a bug in OQGraph engine.
-    # Using the node classes incoming_nodes is equivalent to this.
     def in_edges(node)
       sql = <<-EOS
        WHERE latch = 0 AND destid = #{node.id}

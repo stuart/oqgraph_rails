@@ -1,6 +1,5 @@
 require 'test_helper'
-require 'edge'
-require 'edge_class_methods'
+require 'oqgraph'
 
 class TestModelEdge < ActiveRecord::Base
     include OQGraph::Edge

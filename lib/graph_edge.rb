@@ -1,41 +1,18 @@
+require 'edge_instance_methods'
+require 'edge_class_methods'
+
 module OQGraph
-  module GraphEdge
-    def create_graph_table
-      connection.execute <<-EOS
-      CREATE TABLE IF NOT EXISTS #{oqgraph_table_name} (
-          latch   SMALLINT  UNSIGNED NULL,
-          origid  BIGINT    UNSIGNED NULL,
-          destid  BIGINT    UNSIGNED NULL,
-          weight  DOUBLE    NULL,
-          seq     BIGINT    UNSIGNED NULL,
-          linkid  BIGINT    UNSIGNED NULL,
-          KEY (latch, origid, destid) USING HASH,
-          KEY (latch, destid, origid) USING HASH
-        ) ENGINE=OQGRAPH;
-      EOS
-    
-      # if the DB server has restarted then there will be no records in the oqgraph table.
-      if !up_to_date?
-        update_oqgraph
+  # Check that we have the OQGraph engine plugin installed in MySQL
+  def check_for_oqgraph_engine
+    begin
+      result = false
+      engines = ActiveRecord::Base.connection.execute("SHOW ENGINES")
+      engines.each do |engine|
+        result = true if (engine[0]=="OQGRAPH" and engine[1]=="YES")
       end
+      return result
+    rescue ActiveRecord::StatementInvalid => e
+      raise "MySQL or MariaDB 5.1 or above with the OQGRAPH engine is required for the acts_as_oqgraph gem.\nThe following error was raised: #{e.inspect}"
     end
-  
-  private
-    def oqgraph_table_name
-      "#{self.name.underscore}_oqgraph"
-    end
-    
-    def up_to_date?
-      self.count == connection.select_value("SELECT COUNT(*) FROM #{oqgraph_table_name}") 
-    end
-    
-    def update_oqgraph
-      connection.execute <<-EOS
-        REPLACE INTO #{oqgraph_table_name} (origid, destid, weight)
-        SELECT from_id, to_id, weight FROM #{table_name} 
-        WHERE from_id IS NOT NULL AND to_id IS NOT NULL
-      EOS
-    end
-    
   end
 end

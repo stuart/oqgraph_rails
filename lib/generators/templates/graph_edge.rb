@@ -1,5 +1,6 @@
 class <%= @node_class %>Edge < ActiveRecord::Base
-  extend ::OQGraph::GraphEdge
+  extend ::OQGraph::EdgeClassMethods
+  includes ::OQGraph::EdgeInstanceMethods
   
   after_create  :add_to_graph
   after_destroy :remove_from_graph
@@ -13,7 +14,4 @@ class <%= @node_class %>Edge < ActiveRecord::Base
   
   self.table_name = '<%= @edge_class.underscore.pluralize %>'
   
-  def oqgraph_table_name
-    '<%= "#{@node_class}Oqgraph".underscore %>'
-  end
 end

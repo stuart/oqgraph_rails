@@ -1,14 +1,9 @@
 require 'test_helper'
-require 'graph_edge'
+require 'edge'
+require 'edge_class_methods'
 
 class TestModelEdge < ActiveRecord::Base
-  extend OQGraph::EdgeClassMethods
-  include OQGraph::EdgeInstanceMethods
-  
-  after_create  :add_to_graph
-  after_destroy :remove_from_graph
-  after_update  :update_graph
-  
+    include OQGraph::Edge
 end
 
 class GraphEdgeTest < ActiveSupport::TestCase

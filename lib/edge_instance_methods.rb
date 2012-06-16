@@ -1,6 +1,5 @@
 module OQGraph
   module EdgeInstanceMethods
- 
   private
     def add_to_graph
       connection.execute <<-EOS

@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'oqgraph'
+require 'oqgraph_rails'
 
 class TestNode < ActiveRecord::Base
   include OQGraph::Node

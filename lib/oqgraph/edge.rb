@@ -3,7 +3,7 @@ require 'oqgraph/edge_class_methods'
 
 module OQGraph
   module Edge
-    def self.included base      
+    def self.included base
       base.instance_eval do  
         def self.node_class_name
           self.name.gsub(/Edge$/,'')

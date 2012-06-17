@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'oqgraph'
+require 'oqgraph_rails'
 
 class TestModelEdge < ActiveRecord::Base
     include OQGraph::Edge

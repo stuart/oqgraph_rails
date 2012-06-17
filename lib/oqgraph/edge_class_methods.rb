@@ -49,7 +49,7 @@ module OQGraph
     # Finds all the nodes that lead to the node
     def originating_nodes(node)    
       sql = <<-EOS
-       WHERE latch = 1 AND destid = #{node.id}
+       WHERE latch = 2 AND destid = #{node.id}
        ORDER BY seq;
       EOS
 

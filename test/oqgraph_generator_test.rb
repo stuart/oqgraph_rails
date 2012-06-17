@@ -1,7 +1,7 @@
 require 'test_helper'
-require 'generators/oqgraph_generator'
+require 'generators/oqgraph/oqgraph_generator'
 class OQgraphGeneratorTest < Rails::Generators::TestCase
-  tests ActiveRecord::Generators::OQGraphGenerator
+  tests OQGraph::Generators::OQGraphGenerator
   
   destination File.expand_path("../tmp", __FILE__)
   setup :prepare_destination
@@ -37,7 +37,7 @@ class OQgraphGeneratorTest < Rails::Generators::TestCase
   
   test "creates the initializer" do
     run_generator %w(funky)
-    assert_file 'config/initializers/funky_oqgraph.rb', /FunkyEdge.create_graph_table/
+    assert_file 'config/initializers/funky_oqgraph.rb', /FunkyEdge.update_graph_table/
   end
   
   test "the initializer is parseable ruby" do
@@ -46,4 +46,10 @@ class OQgraphGeneratorTest < Rails::Generators::TestCase
       require 'tmp/config/initializers/funky_oqgraph.rb'
     end
   end
+  
+  test "creates the oqgraph table migration" do
+    run_generator %w(funky)
+    assert_migration 'db/migrate/create_funky_oqgraph.rb'
+  end
+  
 end

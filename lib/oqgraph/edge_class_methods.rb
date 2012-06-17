@@ -20,9 +20,11 @@ module OQGraph
       EOS
   
       # if the DB server has restarted then there will be no records in the oqgraph table.
-      if !up_to_date?
-        update_oqgraph
-      end
+      update_graph_table
+    end
+    
+    def update_graph_table
+      update_oqgraph unless up_to_date?
     end
     
     # Returns the shortest path from node to node.

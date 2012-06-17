@@ -8,7 +8,7 @@ class OQgraphGeneratorTest < Rails::Generators::TestCase
   
   test "creates the correct migration file" do
     run_generator %w(funky)
-    assert_migration 'db/migrate/funkies'
+    assert_migration 'db/migrate/create_funky_edges', /create_table :funky_edges do/
   end
   
   test "creates the edge model class" do

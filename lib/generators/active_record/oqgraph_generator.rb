@@ -17,7 +17,8 @@ module ActiveRecord
       end
       
       def create_edge_table_migration
-        migration_template "graph_edge_migration.rb", "db/migrate/#{table_name}"
+        @edge_table_name = @edge_class.pluralize.underscore
+        migration_template "graph_edge_migration.rb", "db/migrate/create_#{@edge_table_name}"
       end
       
       def create_initializer

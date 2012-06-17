@@ -21,7 +21,9 @@ module OQGraph
 
         belongs_to :from, :class_name => node_class_name, :foreign_key => :from_id
         belongs_to :to,   :class_name => node_class_name, :foreign_key => :to_id
-
+        
+        attr_accessible :from_id, :to_id, :weight
+        
         include OQGraph::EdgeInstanceMethods
         extend OQGraph::EdgeClassMethods
       end

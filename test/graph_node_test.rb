@@ -34,7 +34,7 @@ class GraphNodeTest < ActiveSupport::TestCase
   def teardown
     ActiveRecord::Base.connection.execute("DROP TABLE IF EXISTS test_nodes;")
     ActiveRecord::Base.connection.execute("DROP TABLE IF EXISTS test_node_edges;")
-    ActiveRecord::Base.connection.execute("DELETE FROM test_node_edge_oqgraph;")
+    ActiveRecord::Base.connection.execute("DELETE FROM test_node_oqgraph;")
   end
   
   test "I can connect two nodes" do
@@ -64,7 +64,7 @@ class GraphNodeTest < ActiveSupport::TestCase
   
   test "edge model creation creates oqgraph edge" do
     @test_1.create_edge_to(@test_2, 2.5)
-    oqedge = ActiveRecord::Base.connection.execute("SELECT * FROM test_node_edge_oqgraph WHERE origid=#{@test_1.id} AND destid=#{@test_2.id};")
+    oqedge = ActiveRecord::Base.connection.execute("SELECT * FROM test_node_oqgraph WHERE origid=#{@test_1.id} AND destid=#{@test_2.id};")
     assert_equal [nil,1,2,2.5,nil,nil], oqedge.first                                      
   end
   
@@ -72,17 +72,17 @@ class GraphNodeTest < ActiveSupport::TestCase
     @test_1.outgoing_nodes << @test_2
     edge = @test_1.outgoing_edges.find(:first, :conditions => {:to_id => @test_2.id})
     edge.destroy
-    oqedge = ActiveRecord::Base.connection.execute("SELECT * FROM test_node_edge_oqgraph WHERE origid=#{@test_1.id} AND destid=#{@test_2.id};")
+    oqedge = ActiveRecord::Base.connection.execute("SELECT * FROM test_node_oqgraph WHERE origid=#{@test_1.id} AND destid=#{@test_2.id};")
     assert_equal nil, oqedge.first
   end
   
   test "edge model update updates oqgraph edge" do
     edge = @test_1.create_edge_to(@test_2, 2.5) 
     edge.update_attributes(:weight => 3.0)
-    oqedge = ActiveRecord::Base.connection.execute("SELECT * FROM test_node_edge_oqgraph WHERE origid=#{@test_1.id} AND destid=#{@test_2.id};") 
+    oqedge = ActiveRecord::Base.connection.execute("SELECT * FROM test_node_oqgraph WHERE origid=#{@test_1.id} AND destid=#{@test_2.id};") 
     assert_equal [nil,1,2,3,nil,nil], oqedge.first
     edge.update_attributes(:to_id => 3)
-    oqedge = ActiveRecord::Base.connection.execute("SELECT * FROM test_node_edge_oqgraph WHERE origid=#{@test_1.id} AND destid=3;") 
+    oqedge = ActiveRecord::Base.connection.execute("SELECT * FROM test_node_oqgraph WHERE origid=#{@test_1.id} AND destid=3;") 
     assert_equal [nil,1,3,3,nil,nil], oqedge.first
   end
   
@@ -174,23 +174,23 @@ class GraphNodeTest < ActiveSupport::TestCase
   end
    
   test "duplicate link error" do
-    ActiveRecord::Base.connection.execute("INSERT INTO test_node_edge_oqgraph (destid, origid, weight) VALUES (99,99,1.0);")   
+    ActiveRecord::Base.connection.execute("INSERT INTO test_node_oqgraph (destid, origid, weight) VALUES (99,99,1.0);")   
     assert_raises ActiveRecord::StatementInvalid do
-      ActiveRecord::Base.connection.execute("INSERT INTO test_node_edge_oqgraph (destid, origid, weight) VALUES (99,99,1.0);")
+      ActiveRecord::Base.connection.execute("INSERT INTO test_node_oqgraph (destid, origid, weight) VALUES (99,99,1.0);")
     end
   end
 
   test "duplicate link error fix" do
-    ActiveRecord::Base.connection.execute("REPLACE INTO test_node_edge_oqgraph (destid, origid, weight) VALUES (99,99,1.0);")   
+    ActiveRecord::Base.connection.execute("REPLACE INTO test_node_oqgraph (destid, origid, weight) VALUES (99,99,1.0);")   
     assert_nothing_raised do
-      ActiveRecord::Base.connection.execute("REPLACE INTO test_node_edge_oqgraph (destid, origid, weight) VALUES (99,99,1.0);")
+      ActiveRecord::Base.connection.execute("REPLACE INTO test_node_oqgraph (destid, origid, weight) VALUES (99,99,1.0);")
     end
   end
 
   # There's an odd case here where MySQL would raise an error only when using Rails.
   def test_deletion_of_nonexistent_edge_raises_error
     edge = @test_1.create_edge_to @test_2
-    ActiveRecord::Base.connection.execute("DELETE FROM test_node_edge_oqgraph WHERE destid = #{edge.to_id} AND origid = #{edge.from_id}")
+    ActiveRecord::Base.connection.execute("DELETE FROM test_node_oqgraph WHERE destid = #{edge.to_id} AND origid = #{edge.from_id}")
     assert_nothing_raised do
       edge.destroy
     end
@@ -201,7 +201,7 @@ class GraphNodeTest < ActiveSupport::TestCase
     @test_2.create_edge_to @test_3
     @test_3.create_edge_to @test_4
     # Simulate the DB restart
-    ActiveRecord::Base.connection.execute("DELETE FROM test_node_edge_oqgraph;")
+    ActiveRecord::Base.connection.execute("DELETE FROM test_node_oqgraph;")
     TestNode.rebuild_graph
    
     assert_equal [@test_1, @test_2, @test_3, @test_4], @test_1.shortest_path_to(@test_4)

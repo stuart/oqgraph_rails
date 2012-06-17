@@ -8,8 +8,7 @@ class OQgraphGeneratorTest < Rails::Generators::TestCase
   
   test "creates the correct migration file" do
     run_generator %w(funky)
-    files = Dir.glob('test/tmp/db/migrate/*')
-    assert_match /[0-9]+_funkies/, files[0]
+    assert_migration 'db/migrate/funkies'
   end
   
   test "creates the edge model class" do

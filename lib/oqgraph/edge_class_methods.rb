@@ -86,6 +86,10 @@ module OQGraph
       node_class.find_by_sql select_for_node << sql 
     end
     
+    def node_table
+      node_class.table_name
+    end
+    
   private
     def select_for_node
       sql = "SELECT "
@@ -94,11 +98,7 @@ module OQGraph
     end
     
     def oqgraph_table_name
-      "#{self.name.underscore}_oqgraph"
-    end
-  
-    def node_table
-      node_class.table_name
+      "#{node_table.singularize}_oqgraph"
     end
     
     def up_to_date?

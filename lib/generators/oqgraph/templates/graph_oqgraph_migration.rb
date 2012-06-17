@@ -1,4 +1,4 @@
-class Create<%= @edge_class %>OQgraph < ActiveRecord::Migration
+class Create<%= @node_class %>Oqgraph < ActiveRecord::Migration
   
   def up
     ActiveRecord::Base.connection.execute <<-EOS
@@ -16,6 +16,6 @@ class Create<%= @edge_class %>OQgraph < ActiveRecord::Migration
   end
   
   def down
-    drop_table '<%= @oqgraph_table_name %>'
+    drop_table "<%= @oqgraph_table_name %>"
   end
 end

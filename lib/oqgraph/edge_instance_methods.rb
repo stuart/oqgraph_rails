@@ -29,7 +29,7 @@ module OQGraph
     end
     
     def oqgraph_table_name
-      "#{self.class.name.underscore}_oqgraph"
+      "#{self.class.node_table.singularize}_oqgraph"
     end
   end
 end

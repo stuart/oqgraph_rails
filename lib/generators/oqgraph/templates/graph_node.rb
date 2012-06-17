@@ -1,4 +1,4 @@
 class <%= @node_class %> < ActiveRecord::Base
-  include OQGraph::Edge
+  include OQGraph::Node
   
 end

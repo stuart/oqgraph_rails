@@ -34,4 +34,16 @@ class OQgraphGeneratorTest < Rails::Generators::TestCase
       require 'tmp/app/models/funky'
     end
   end
+  
+  test "creates the initializer" do
+    run_generator %w(funky)
+    assert_file 'config/initializers/funky_oqgraph.rb', /FunkyEdge.create_graph_table/
+  end
+  
+  test "the initializer is parseable ruby" do
+    run_generator %w(funky)
+    assert_nothing_raised do
+      require 'tmp/config/initializers/funky_oqgraph.rb'
+    end
+  end
 end

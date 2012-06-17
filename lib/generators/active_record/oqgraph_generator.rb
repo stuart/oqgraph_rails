@@ -20,6 +20,9 @@ module ActiveRecord
         migration_template "graph_edge_migration.rb", "db/migrate/#{table_name}"
       end
       
+      def create_initializer
+        template "graph_initializer.rb", File.join("config/initializers/#{file_name}_oqgraph.rb")
+      end
     end
   end
 end

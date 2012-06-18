@@ -180,4 +180,4 @@ If you are not getting any results from the oqgraph table try dropping it and re
 
 I'm working on a way to tell if the oqgraph table is stale other than by the current count of rows. Suggestions would be welcome.
 
-Copyright (c) 2010 Stuart Coyle, released under the MIT license
+Copyright (c) 2010 - 2012 Stuart Coyle, released under the MIT license

@@ -133,7 +133,6 @@ class GraphNodeTest < ActiveSupport::TestCase
   end
   
   # 1 -> 2 -> 3
-  # This is broken!!
   test "getting originating nodes" do
     @test_1.create_edge_to @test_2
     @test_2.create_edge_to @test_3
@@ -146,12 +145,18 @@ class GraphNodeTest < ActiveSupport::TestCase
     assert_equal [@test_2, @test_3] , @test_2.reachable
   end
   
-  # Broken too.
   test "testing if the node is originating" do
     @test_1.create_edge_to @test_2
     @test_2.create_edge_to @test_3
     assert @test_2.originating?(@test_1)
-    assert !@test_2.originating?(@test_3) 
+    refute @test_2.originating?(@test_3) 
+  end
+  
+  test "testing if the node is reachable" do
+    @test_1.create_edge_to @test_2
+    @test_2.create_edge_to @test_3
+    assert @test_2.reachable?(@test_3)
+    refute @test_2.reachable?(@test_1)
   end
   
   test "get the incoming nodes" do
@@ -188,7 +193,7 @@ class GraphNodeTest < ActiveSupport::TestCase
   end
 
   # There's an odd case here where MySQL would raise an error only when using Rails.
-  def test_deletion_of_nonexistent_edge_raises_error
+  test "deletion of a nonexistent edge does no raise an error" do
     edge = @test_1.create_edge_to @test_2
     ActiveRecord::Base.connection.execute("DELETE FROM test_node_oqgraph WHERE destid = #{edge.to_id} AND origid = #{edge.from_id}")
     assert_nothing_raised do
@@ -196,7 +201,7 @@ class GraphNodeTest < ActiveSupport::TestCase
     end
   end  
   
-  def test_rebuild_graph
+  test "rebuilding of edge graph" do
     @test_1.create_edge_to @test_2
     @test_2.create_edge_to @test_3
     @test_3.create_edge_to @test_4

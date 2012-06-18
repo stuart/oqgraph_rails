@@ -155,6 +155,9 @@ For a node connected to most of the network finding all reachable nodes averages
 This is strongly dependent on how well connected the graph is.
 
 To find shortest paths between nodes takes about 5 to 10ms per request.
+To find all connected nodes takes about 30 to 50ms. The slow bit becomes instatiation of
+the models.
+
 Here's an example request: 
   Processing OqgraphUsersController#show_path (for 127.0.0.1 at 2010-07-21 17:09:59) [GET]
   Parameters: {"id"=>"223", "other_id"=>"2333"}

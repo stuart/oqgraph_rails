@@ -124,21 +124,29 @@ The gem will automatically create the OQgraph table and the associations to it f
 ```
  foo.create_edge_to(bar)
  foo.create_edge_to_and_from(bar)
+```
 
 Edge creation using ActiveRecord associations: 
+
 ```
  foo.outgoing_nodes << bar
+```
+
 or equivalently:
 ```
   bar.incoming_nodes << foo
+```
+
 At the moment you cannot add weights to edges with this style of notation.
 
 Create a edge with weight:
+
 ```
  bar.create_edge_to(baz, 2.0)
 ```
 
 Removing a edge:
+
 ```
  foo.remove_edge_to(bar)
  foo.remove_edge_from(bar)

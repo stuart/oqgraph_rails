@@ -11,6 +11,9 @@ pros and cons of both approaches, It really depends on your needs. Both librarie
 use the C++ Boost graph library at the bottom layers. OQGraph has expensive 
 insert operations but is very fast at delivering the graph data and finding paths in a single SQL query.
 
+This gem requires the use of MySQL or MariaDB with the OQGraph engine plugin.
+For details of this see: http://openquery.com/products/graph-engine
+
 ## Concepts
 
 The term graph we are using here is a mathematical one not a pretty picture (sorry designers). 
@@ -33,6 +36,7 @@ Or even the friends of friends of friends...right up to the six degrees of separ
 Well you can do it, with some really slow and nasty SQL queries. Relational databases are good at set
 based queries but no good at graph or tree based queries. The OQGraph engine is good at graph based queries, 
 it enables you in one simple SQL query to find all friends of friends. 
+
 Do this: 
 
 ```
@@ -53,8 +57,11 @@ Then I can call:
 
 and I get the whole tree of friends of friends etc...
              
-Imagine you have a maze to solve. With OQGraph the solution is as simple as: start_cell.shortest_path_to(finish_cell).
-See the demo code at http://github.com/stuart/acts_as_oqgraph_demo
+Imagine you have a maze to solve. With OQGraph the solution is as simple as: 
+
+```
+start_cell.shortest_path_to(finish_cell)
+```
 
 It's good for representing tree structures, networks, routes between cities etc.
 
@@ -95,24 +102,20 @@ The edge model schema should be like this:
     end
 ```
 
-## Setup
-
-This gem requires the use of MySQL or MariaDB with the OQGraph engine plugin.
-For details of this see: http://openquery.com/products/graph-engine
-
-You should be able also to extend the edge and node models as you wish.
-The gem will automatically create the OQgraph table and the associations to it from your node model.
-
-The associations are:
+The associations defined on the edge and node model are:
 
 ```
   node_model.outgoing_edges
   node_model.incoming_edges
   node_model.outgoing_nodes
   node_model.incoming_nodes
+  
   edge_model.to
   edge_model.from
 ```
+
+You should be able also to extend the edge and node models as you wish.
+The gem will automatically create the OQgraph table and the associations to it from your node model.
 
 ## Examples of Use
 
@@ -133,11 +136,13 @@ At the moment you cannot add weights to edges with this style of notation.
 Create a edge with weight:
 ```
  bar.create_edge_to(baz, 2.0)
- 
+```
+
 Removing a edge:
 ```
  foo.remove_edge_to(bar)
  foo.remove_edge_from(bar)
+```
 
 Note that these calls remove ALL edges to bar from foo
 
@@ -167,6 +172,7 @@ Includes the node calling the method.
   foo.shortest_path_to(baz) 
   -> [foo, bar,baz]
 ``` 
+
   The shortest path to can take a :method which can either be :dijikstra (the default)
   or :breadth_first. The breadth first method does not take weights into account.
   It is faster in some cases.
@@ -195,7 +201,7 @@ For a node connected to most of the network finding all reachable nodes averages
 This is strongly dependent on how well connected the graph is.
 
 To find shortest paths between nodes takes about 5 to 10ms per request.
-To find all connected nodes takes about 30 to 50ms. The slow bit becomes instatiation of
+To find all connected nodes takes about 30 to 50ms. The slow bit is the instatiation of
 the models.
 
 Here's an example request: 

@@ -16,4 +16,5 @@ Gem::Specification.new do |gem|
   gem.version       = OqgraphRails::VERSION
   gem.add_runtime_dependency 'mysql2'
   gem.add_runtime_dependency 'activerecord'
+  gem.add_runtime_dependency 'minitest'
 end

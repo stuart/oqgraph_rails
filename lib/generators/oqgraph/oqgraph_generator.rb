@@ -27,10 +27,6 @@ module OQGraph
          migration_template "graph_edge_migration.rb", "db/migrate/create_#{@edge_table_name}"
        end
 
-       def create_initializer
-         template "graph_initializer.rb", File.join("config/initializers/#{file_name}_oqgraph.rb")
-       end
-      
        def create_oqgraph_migration
          @oqgraph_table_name = "#{file_name}_oqgraph"
          migration_template "graph_oqgraph_migration.rb", "db/migrate/create_#{@oqgraph_table_name}"

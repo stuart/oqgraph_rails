@@ -37,17 +37,20 @@ Do this:
 
 ```
     user.reachable
-    
+```
+
 If you really want to you can rename the reachable method so you can do this in your User model:
 
 ```
     alias :friends, :reachable
+```
 
 Then I can call: 
 
 ```
     user.friends
-    
+```
+
 and I get the whole tree of friends of friends etc...
              
 Imagine you have a maze to solve. With OQGraph the solution is as simple as: start_cell.shortest_path_to(finish_cell).
@@ -61,6 +64,7 @@ Use the generators to create your skeleton node and edge classes.
   
 ```
   rails g oqgraph
+```
 
 This will create a node and an edge model as well as a migration to
 create the edge model's table.
@@ -71,6 +75,7 @@ A node model should look like this:
   class Foo < ActiveRecord::Base
     include OQGraph::Node
   end
+```
 
 An edge model should look like this:
 
@@ -78,7 +83,8 @@ An edge model should look like this:
   class FooEdge < ActiveRecord::Base
     include OQGraph::Edge
   end
-  
+```
+
 The edge model schema should be like this:
 
 ```
@@ -87,6 +93,7 @@ The edge model schema should be like this:
         t.integer :to_id
         t.float   :weight, :limit => 25
     end
+```
 
 ## Setup
 
@@ -105,6 +112,7 @@ The associations are:
   node_model.incoming_nodes
   edge_model.to
   edge_model.from
+```
 
 ## Examples of Use
 
@@ -142,6 +150,7 @@ Includes the node calling the method.
 ```
  foo.originating
  bar.originating?(baz)
+```
 
 What nodes can I reach from this one?
 Gives us an array of nodes that are connected to this one in the outward (to) direction.
@@ -150,18 +159,21 @@ Includes the node calling the method.
 ```
  bar.reachable
  foo.reachable?(baz)
+```
 
 ### Path Finding:
 
 ```
-  foo.shortest_path_to(baz)
-   returns [foo, bar,baz]
-  
+  foo.shortest_path_to(baz) 
+  -> [foo, bar,baz]
+``` 
   The shortest path to can take a :method which can either be :dijikstra (the default)
   or :breadth_first. The breadth first method does not take weights into account.
   It is faster in some cases.
-  
+
+```
   foo.shortest_path_to(baz, :method => :breadth_first)
+```
 
 All these methods return the node object with an additional weight field.
 This enables you to query the weights associated with the edges found.

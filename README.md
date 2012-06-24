@@ -1,4 +1,4 @@
-= OQGraph Rails
+# OQGraph Rails
 
 This gem can be used with ActiveRecord to access the features of the OQGraph
 MySQL plugin. 
@@ -11,7 +11,7 @@ pros and cons of both approaches, It really depends on your needs. Both librarie
 use the C++ Boost graph library at the bottom layers. OQGraph has expensive 
 insert operations but is very fast at delivering the graph data and finding paths in a single SQL query.
 
-== Concepts
+## Concepts
 
 The term graph we are using here is a mathematical one not a pretty picture (sorry designers). 
 For more see: http://en.wikipedia.org/wiki/Graph_(mathematics) 
@@ -24,7 +24,7 @@ one each way between each node.
 Edges can be assigned positive floating point values called weights. Weights default to 1.0
 The weights are used in shortest path calculations, a path is shorter if the sum of weights over each edge is smaller.
 
-== What you can do with OQGraph?
+## What you can do with OQGraph?
 
 Imagine your shiny new social networking app, FarceBook.
 You have lots and lots of users each with several friends. How do you find the friends of friends?
@@ -34,11 +34,20 @@ Well you can do it, with some really slow and nasty SQL queries. Relational data
 based queries but no good at graph or tree based queries. The OQGraph engine is good at graph based queries, 
 it enables you in one simple SQL query to find all friends of friends. 
 Do this: 
+
+```
     user.reachable
+    
 If you really want to you can rename the reachable method so you can do this in your User model:
+
+```
     alias :friends, :reachable
+
 Then I can call: 
+
+```
     user.friends
+    
 and I get the whole tree of friends of friends etc...
              
 Imagine you have a maze to solve. With OQGraph the solution is as simple as: start_cell.shortest_path_to(finish_cell).
@@ -46,10 +55,11 @@ See the demo code at http://github.com/stuart/acts_as_oqgraph_demo
 
 It's good for representing tree structures, networks, routes between cities etc.
 
-== Usage
+## Usage
 
 Use the generators to create your skeleton node and edge classes.
   
+```
   rails g oqgraph
 
 This will create a node and an edge model as well as a migration to
@@ -57,25 +67,28 @@ create the edge model's table.
 
 A node model should look like this:
 
+```
   class Foo < ActiveRecord::Base
     include OQGraph::Node
   end
 
 An edge model should look like this:
 
+```
   class FooEdge < ActiveRecord::Base
     include OQGraph::Edge
   end
   
 The edge model schema should be like this:
 
+```
     create_table :foo_edges do |t|
         t.integer :from_id
         t.integer :to_id
         t.float   :weight, :limit => 25
     end
-    
-== Setup
+
+## Setup
 
 This gem requires the use of MySQL or MariaDB with the OQGraph engine plugin.
 For details of this see: http://openquery.com/products/graph-engine
@@ -84,6 +97,8 @@ You should be able also to extend the edge and node models as you wish.
 The gem will automatically create the OQgraph table and the associations to it from your node model.
 
 The associations are:
+
+```
   node_model.outgoing_edges
   node_model.incoming_edges
   node_model.outgoing_nodes
@@ -91,41 +106,54 @@ The associations are:
   edge_model.to
   edge_model.from
 
-= Examples of Use
+## Examples of Use
 
-=== Creating edges:
+### Creating edges:
+
+```
  foo.create_edge_to(bar)
  foo.create_edge_to_and_from(bar)
 
 Edge creation using ActiveRecord associations: 
+```
  foo.outgoing_nodes << bar
 or equivalently:
+```
   bar.incoming_nodes << foo
 At the moment you cannot add weights to edges with this style of notation.
 
 Create a edge with weight:
+```
  bar.create_edge_to(baz, 2.0)
  
 Removing a edge:
+```
  foo.remove_edge_to(bar)
  foo.remove_edge_from(bar)
+
 Note that these calls remove ALL edges to bar from foo
 
-=== Examining edges: 
+### Examining edges: 
 
 What nodes point to this one?
 Gives us an array of nodes that are connected to this one in the inward (from) direction.
 Includes the node calling the method.
+
+```
  foo.originating
  bar.originating?(baz)
 
 What nodes can I reach from this one?
 Gives us an array of nodes that are connected to this one in the outward (to) direction.
 Includes the node calling the method.
+
+```
  bar.reachable
  foo.reachable?(baz)
 
-=== Path Finding:
+### Path Finding:
+
+```
   foo.shortest_path_to(baz)
    returns [foo, bar,baz]
   
@@ -138,7 +166,7 @@ Includes the node calling the method.
 All these methods return the node object with an additional weight field.
 This enables you to query the weights associated with the edges found.
 
-== Behind the Scenes
+## Behind the Scenes
 
 The OQGraph table will also get created if it does not exist. The OQGraph table is volatile, it holds data in 
 memory only. The table structure is not volatile and gets stored in the db. 
@@ -148,7 +176,7 @@ means it does not happen on every request. The graph table is only rewritten now
 You can use this code to force the graph to be rebuilt:
   NodeModel.rebuild_graph
 
-== How fast is it?
+### How fast is it?
 I've tested with an application with 10000 nodes and 0 to 9 links from each.
 
 For a node connected to most of the network finding all reachable nodes averages at about 300ms.
@@ -159,6 +187,8 @@ To find all connected nodes takes about 30 to 50ms. The slow bit becomes instati
 the models.
 
 Here's an example request: 
+
+```
   Processing OqgraphUsersController#show_path (for 127.0.0.1 at 2010-07-21 17:09:59) [GET]
   Parameters: {"id"=>"223", "other_id"=>"2333"}
     OqgraphUser Load (0.3ms)   SELECT * FROM `oqgraph_users` WHERE (`oqgraph_users`.`id` = 223) 
@@ -168,10 +198,11 @@ Here's an example request:
 
   Rendering oqgraph_users/show_path
   Completed in 6ms (View: 2, DB: 3) | 200 OK [http://localhost/oqgraph_users/223/path_to/2333]
+```
 
 Of course YMMV.
 
-== Hairy bits, bugs and gotchas
+### Hairy bits, bugs and gotchas
 
 To keep the oqgraph table up to date the edge model copies all of it records in when first instantiated.
 This means that on first startup the app can be slow to respond until the whole graph has been written.

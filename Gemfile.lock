@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    oqgraph_rails (0.0.1)
+    oqgraph_rails (0.1.0)
       activerecord
       minitest
       mysql2
@@ -26,6 +26,7 @@ GEM
     minitest (3.1.0)
     multi_json (1.3.6)
     mysql2 (0.3.11)
+    rake (0.9.2.2)
     tzinfo (0.3.33)
 
 PLATFORMS
@@ -33,3 +34,4 @@ PLATFORMS
 
 DEPENDENCIES
   oqgraph_rails!
+  rake

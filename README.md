@@ -238,6 +238,10 @@ by using the --init-file=<SQLfile> option in my.cnf with the appropriate SQL in 
 I've encountered a bug where the oqgraph table occasionally needs to be dropped and rebuilt. It's being tracked down.
 If you are not getting any results from the oqgraph table try dropping it and restarting the app.
 
+The OQGraph migration sets the database engine to OQGRAPH, the mysql active record adapter always defaults the
+engine to INNODB, this means that while the migration to create the table works, creating the table using
+the schema will not set the correct database engine.
+
 I'm working on a way to tell if the oqgraph table is stale other than by the current count of rows. Suggestions would be welcome.
 
 Copyright (c) 2010 - 2012 Stuart Coyle, released under the MIT license
